@@ -3,36 +3,36 @@ import CLibvenice
 public typealias PID = pid_t
 
 /// Runs the expression in a lightweight coroutine.
-public func coroutine(_ routine: @escaping (Void) -> Void) {
+public func coroutine(_ routine: @escaping () -> Void) {
     var _routine = routine
     CLibvenice.co(&_routine, { routinePointer in
-        routinePointer!.assumingMemoryBound(to: ((Void) -> Void).self).pointee()
+        routinePointer!.assumingMemoryBound(to: (() -> Void).self).pointee()
     }, "co")
 }
 
 /// Runs the expression in a lightweight coroutine.
-public func coroutine(_ routine: @autoclosure @escaping  (Void) -> Void) {
-    var _routine: (Void) -> Void = routine
+public func coroutine(_ routine: @autoclosure @escaping  () -> Void) {
+    var _routine: () -> Void = routine
     CLibvenice.co(&_routine, { routinePointer in
-        routinePointer!.assumingMemoryBound(to: ((Void) -> Void).self).pointee()
+        routinePointer!.assumingMemoryBound(to: (() -> Void).self).pointee()
     }, "co")
 }
 
 /// Runs the expression in a lightweight coroutine.
-public func co(_ routine: @escaping (Void) -> Void) {
+public func co(_ routine: @escaping () -> Void) {
     coroutine(routine)
 }
 
 /// Runs the expression in a lightweight coroutine.
-public func co(_ routine: @autoclosure @escaping (Void) -> Void) {
-    var _routine: (Void) -> Void = routine
+public func co(_ routine: @autoclosure @escaping () -> Void) {
+    var _routine: () -> Void = routine
     CLibvenice.co(&_routine, { routinePointer in
-        routinePointer!.assumingMemoryBound(to: ((Void) -> Void).self).pointee()
+        routinePointer!.assumingMemoryBound(to: (() -> Void).self).pointee()
     }, "co")
 }
 
 /// Runs the expression in a lightweight coroutine after the given duration.
-public func after(_ napDuration: Double, routine: @escaping (Void) -> Void) {
+public func after(_ napDuration: Double, routine: @escaping () -> Void) {
     co {
         nap(for: napDuration)
         routine()
@@ -40,7 +40,7 @@ public func after(_ napDuration: Double, routine: @escaping (Void) -> Void) {
 }
 
 /// Runs the expression in a lightweight coroutine periodically. Call done() to leave the loop.
-public func every(_ napDuration: Double, routine: @escaping (_ done: (Void) -> Void) -> Void) {
+public func every(_ napDuration: Double, routine: @escaping (_ done: () -> Void) -> Void) {
     co {
         var done = false
         while !done {
